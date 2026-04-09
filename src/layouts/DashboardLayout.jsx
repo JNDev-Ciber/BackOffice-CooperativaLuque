@@ -61,6 +61,7 @@ export default function DashboardLayout() {
         <nav style={{ padding: "12px 10px", display: "flex", flexDirection: "column", gap: 2, flex: 1 }}>
           <SidebarLink to="/dashboard/categories">Categorías</SidebarLink>
           <SidebarLink to="/dashboard/news">Noticias</SidebarLink>
+          <SidebarLink to="/dashboard/internet">Planes de Internet</SidebarLink>
         </nav>
 
         {/* Footer usuario + logout */}

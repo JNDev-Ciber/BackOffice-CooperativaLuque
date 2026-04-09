@@ -4,6 +4,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import CategoriesPage from "./pages/CategoriesPage";
 import LoginPage from "./pages/LoginPage";
 import NewsPage from "./pages/NewsPage";
+import InternetPlansPage from "./pages/InternetPlansPage";
 
 function App() {
   return (
@@ -13,9 +14,13 @@ function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="/dashboard/categories" replace />} />
+          <Route
+            index
+            element={<Navigate to="/dashboard/categories" replace />}
+          />
           <Route path="categories" element={<CategoriesPage />} />
           <Route path="news" element={<NewsPage />} />
+          <Route path="internet" element={<InternetPlansPage />} />
         </Route>
       </Route>
 

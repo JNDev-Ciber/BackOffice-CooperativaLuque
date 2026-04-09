@@ -307,6 +307,7 @@ export default function NewsPage() {
   const [news, setNews] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [filterCategoryId, setFilterCategoryId] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -441,21 +442,19 @@ export default function NewsPage() {
     }
   }
 
-  async function onDelete(item) {
-    if (
-      !window.confirm(`Eliminar "${item.deceased_first_name || item.title}"?`)
-    )
-      return;
+  async function confirmDelete() {
+    if (!deleteTarget) return;
     setError(null);
     setLoading(true);
     try {
-      await rpcDeleteNewsFiles(item.id);
-      await rpcDeleteNews(item.id);
+      await rpcDeleteNewsFiles(deleteTarget.id);
+      await rpcDeleteNews(deleteTarget.id);
       await load();
     } catch (e) {
       setError(e?.message ?? "Error eliminando");
     } finally {
       setLoading(false);
+      setDeleteTarget(null);
     }
   }
 
@@ -851,11 +850,80 @@ export default function NewsPage() {
               loading={loading}
               categoryName={categoryNameFor(it.category_id)}
               onEdit={() => startEdit(it)}
-              onDelete={() => onDelete(it)}
+              onDelete={() => setDeleteTarget(it)}
             />
           ))}
         </div>
       </div>
+
+      {/* ── Modal de confirmación ── */}
+      {deleteTarget && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.4)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setDeleteTarget(null)}
+        >
+          <div
+            style={{
+              background: "var(--bg-2)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-md)",
+              padding: "24px 28px",
+              maxWidth: 400,
+              width: "90%",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              style={{
+                fontWeight: 600,
+                fontSize: "1rem",
+                color: "var(--text-h)",
+                marginBottom: 8,
+              }}
+            >
+              Confirmar eliminación
+            </div>
+            <div
+              style={{
+                fontSize: "0.875rem",
+                color: "var(--text-muted)",
+                marginBottom: 20,
+              }}
+            >
+              ¿Eliminar &ldquo;{deleteTarget.deceased_first_name || deleteTarget.title}&rdquo;?
+              Esta acción no se puede deshacer.
+            </div>
+            <div
+              style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}
+            >
+              <button
+                onClick={() => setDeleteTarget(null)}
+                disabled={loading}
+                style={{ fontSize: "0.85rem", padding: "8px 16px" }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={loading}
+                className="btn-danger"
+                style={{ fontSize: "0.85rem", padding: "8px 16px" }}
+              >
+                {loading ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
