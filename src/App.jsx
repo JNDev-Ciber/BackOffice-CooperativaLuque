@@ -6,7 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import NewsPage from "./pages/NewsPage";
 import InternetPlansPage from "./pages/InternetPlansPage";
 import ElectricityPlansPage from "./pages/ElectrityPage";
-
+//
 function App() {
   return (
     <Routes>
