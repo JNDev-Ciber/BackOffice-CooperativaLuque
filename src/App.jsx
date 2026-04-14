@@ -5,6 +5,7 @@ import CategoriesPage from "./pages/CategoriesPage";
 import LoginPage from "./pages/LoginPage";
 import NewsPage from "./pages/NewsPage";
 import InternetPlansPage from "./pages/InternetPlansPage";
+import ElectricityPlansPage from "./pages/ElectrityPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="categories" element={<CategoriesPage />} />
           <Route path="news" element={<NewsPage />} />
           <Route path="internet" element={<InternetPlansPage />} />
+          <Route path="electricidad" element={<ElectricityPlansPage />} />
         </Route>
       </Route>
 

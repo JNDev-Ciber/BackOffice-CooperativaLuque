@@ -2,11 +2,6 @@ import { supabase } from "../supabaseClient";
 
 const MAX_VIDEO_SIZE = 30 * 1024 * 1024;
 
-function generateFileName(file) {
-  const ext = file.name.split(".").pop();
-  return `${crypto.randomUUID()}.${ext}`;
-}
-
 export function getFileType(file) {
   return file.type.startsWith("video/") ? "video" : "image";
 }
@@ -15,15 +10,25 @@ export async function uploadFileToStorage(file) {
   if (getFileType(file) === "video" && file.size > MAX_VIDEO_SIZE) {
     throw new Error("El video no puede superar los 30 MB.");
   }
-  const fileName = generateFileName(file);
-  const { error } = await supabase.storage
-    .from("news_images")
-    .upload(fileName, file, { upsert: false, contentType: file.type });
-  if (error) throw new Error(error.message);
-  const { data } = supabase.storage.from("news_images").getPublicUrl(fileName);
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "cooperativa_luque_unsigned"); 
+  formData.append("folder", "cooperativa-de-luque/noticias");
+
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${
+      import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+    }/auto/upload`,
+    { method: "POST", body: formData }
+  );
+
+  if (!res.ok) throw new Error("Error subiendo archivo a Cloudinary");
+
+  const json = await res.json();
   return {
-    fileName,
-    fileUrl: data.publicUrl,
+    fileName: json.public_id,
+    fileUrl: json.secure_url,
     fileType: getFileType(file),
     fileSize: file.size,
   };
@@ -75,7 +80,7 @@ export async function rpcUploadNewsFile(
   fileUrl,
   fileType,
   fileSize,
-  isCover,
+  isCover
 ) {
   const { error } = await supabase.rpc("upload_news_file", {
     p_news_id: newsId,
