@@ -63,6 +63,8 @@ export default function DashboardLayout() {
           <SidebarLink to="/dashboard/news">Noticias</SidebarLink>
           <SidebarLink to="/dashboard/internet">Planes de Internet</SidebarLink>
           <SidebarLink to="/dashboard/electricidad">Planes de Electricidad</SidebarLink>
+          <SidebarLink to="/dashboard/tvplans">Planes de TV</SidebarLink>
+          <SidebarLink to="/dashboard/cellularphone">Planes de Telefonia Celular</SidebarLink>
         </nav>
 
         {/* Footer usuario + logout */}
